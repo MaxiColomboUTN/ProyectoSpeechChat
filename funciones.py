@@ -49,3 +49,5 @@ def abrirCalculadora():
 def abrirCalendario():
 
 def abrirPapelera():
+
+def abrirConfiguracion():
