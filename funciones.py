@@ -47,3 +47,5 @@ def abrirCamara():
 def abrirCalculadora():
     
 def abrirCalendario():
+
+def abrirPapelera():
