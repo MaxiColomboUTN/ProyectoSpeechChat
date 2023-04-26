@@ -1,4 +1,4 @@
-                        #Uso de librerias
+#Uso de librerias
 # request: biblioteca que nos permite hacer solicitudes HTTP a sitios web y API's
 # wikipedia: buscar, obtener y analizar contenido de Wikipedia
 # pywhatkit: biblioteca de terceros que se utiliza para automatizar tareas relacionadas con la informática. Esta biblioteca permite hacer cosas como enviar mensajes de texto a través de WhatsApp, buscar información en Google y YouTube, etc
