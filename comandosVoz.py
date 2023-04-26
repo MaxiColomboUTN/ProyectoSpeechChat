@@ -23,7 +23,7 @@ def escuchar():
             rec = rec.lower() #transforma el texto en minusculas para evitar problemas
             if name in rec:
                 rec = rec.replace(name, '') #remplaza el nombre por vacio, se hace esto para evitar que nuestro asistente repita lo que nosotros le decimos
-
+    
     except:
         pass
     return rec
