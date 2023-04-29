@@ -13,7 +13,6 @@ engine.setProperty('volume',1.0)
 voices = engine.getProperty('voices')
 engine.setProperty('voices', voices[0].id) # colocamos la voz en español, se encuentra en la posicion 0 de voices.
 
-
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
     engine.say(text)
