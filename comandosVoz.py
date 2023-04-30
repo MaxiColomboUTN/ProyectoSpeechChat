@@ -59,6 +59,7 @@ def ejecutar_SpeakIA():
                     mixer.init() 
                     mixer.music.load("alarma.mp3") # mixer nos permite cargar un sonido en formato .mp3
                     mixer.music.play()
+                    #if keyboard.read_key() == "p":
                     if pynput.keyboard == "p": # si lee la tecla s, la musica parará
                         mixer.music.stop()
                     break
