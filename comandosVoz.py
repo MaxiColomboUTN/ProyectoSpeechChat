@@ -1,5 +1,5 @@
 import speech_recognition as sr #le colocamos un alias a nuestra libreria
-import pyttsx3, pywhatkit, wikipedia, datetime, pynput #keyboard pyaudio no hace falta importarla
+import pyttsx3, pywhatkit, wikipedia, datetime, pynput, keyboard #pyaudio no hace falta importarla
 from pygame import mixer
 
 #Declaracion de variables
@@ -59,8 +59,13 @@ def ejecutar_SpeakIA():
                     mixer.init() 
                     mixer.music.load("alarma.mp3") # mixer nos permite cargar un sonido en formato .mp3
                     mixer.music.play()
+                    #rec = escuchar()
+                    #if 'parar alarma' in rec:
+                    #    mixer.music.stop()
+                    #    break
                     #if keyboard.read_key() == "p":
-                    if pynput.keyboard == "p": # si lee la tecla s, la musica parará
+                    #if pynput.keyboard. == "p": # si lee la tecla s, la musica parará
+                    if keyboard.read_key() == "s":
                         mixer.music.stop()
                     break
                 
