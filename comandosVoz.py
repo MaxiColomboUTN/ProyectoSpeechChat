@@ -75,7 +75,7 @@ def ejecutar_SpeakIA():
                     #if 'parar alarma' in rec:
                     #    mixer.music.stop()
                     #    break
-                    #if keyboard.read_key() == "p":
+                    #f keyboard.read_key() == "p":
                     #if pynput.keyboard. == "p": # si lee la tecla s, la musica parará
                     if keyboard.read_key() == "s":
                         mixer.music.stop()
