@@ -29,6 +29,15 @@ files={
             'prueba':'Prueba.pdf',
         }
 
+#Definimos funcion escribir
+def escribir(f):
+    hablar("¿Que quieres que escriba?")
+    rec_write = escuchar()
+    f.write(rec_write + os.linesep)
+    f.close()
+    hablar("Listo, puedes revisarlo")
+    sub.Popen("notas.txt",shell=True)
+    #sub.Popen(['xdg-open', file_path])
 
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
@@ -95,7 +104,14 @@ def ejecutar_SpeakIA():
                     file_path = files[file]  # Ruta absoluta del archivo
                     sub.Popen(['xdg-open', file_path]) # es un comando en Ubuntu que se utiliza para abrir archivos con la aplicación predeterminada asociada a su tipo de archivo.
                     hablar(f'Abriendo {file}')
-        
+        elif 'escribe' in rec:
+            try:
+                with open("nota.txt",'a') as f:
+                    escribir(f)
+                    
+            except FileNotFoundError as e:
+                file = open("nota.txt",'w')
+                escribir(file)
 
         
         
