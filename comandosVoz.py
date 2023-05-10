@@ -1,5 +1,6 @@
 import speech_recognition as sr #le colocamos un alias a nuestra libreria
-import pyttsx3, pywhatkit, wikipedia, datetime, pynput, keyboard #pyaudio no hace falta importarla
+import pyttsx3, pywhatkit, wikipedia, datetime, pynput, keyboard, os #pyaudio no hace falta importarla
+import subprocess as sub # nos permite ejecutar otros programas de nuestra computadora
 from pygame import mixer
 
 #Declaracion de variables
@@ -7,12 +8,10 @@ name = "Juan" #le colocamos un nombre, revisar nombre
 listener = sr.Recognizer() #inicializamos Recognizer y lo asignamos a listener
 engine = pyttsx3.init() # inicializamos nuestra libreria pyttsx3
 
-
-engine.setProperty('rate',190)
-engine.setProperty('volume',1.0)
-
 voices = engine.getProperty('voices')
 engine.setProperty('voices', voices[0].id) # colocamos la voz en español, se encuentra en la posicion 0 de voices.
+engine.setProperty('rate',145)
+engine.setProperty('volume',1.0)
 
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
@@ -51,7 +50,7 @@ def ejecutar_SpeakIA():
         elif 'alarma' in rec:  # nos programa una alarma
             alarma = rec.replace('alarma', '')
             alarma = alarma.strip() #strip elimina el espacio vacio de arriba para que la hora se pueda asignar correctamente
-            hablar("La alarma se ha activado a las " + alarma + " horas")
+            hablar("Se estableció la alarma a las " + alarma + " horas")
             while True:
                 if datetime.datetime.now().strftime('%H:%M') == alarma:  #obtiene la hora actual del sistema y la devuelve en un formato de cadena de texto.
                     # strftime devolverá una cadena que contiene las horas y los minutos actuales en formato de 24 horas. No se puede comparar un objeto de tipo fecha y hora con un string.
@@ -68,7 +67,10 @@ def ejecutar_SpeakIA():
                     if keyboard.read_key() == "s":
                         mixer.music.stop()
                     break
-                
+        elif 'abre' in rec:
+            for site in sites:
+                if site in rec:
+                    sub.call(f'start')         
 
 if __name__ == '__main__':
     ejecutar_SpeakIA()
