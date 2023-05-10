@@ -23,7 +23,11 @@ sites={
             'github':'github.com',
             'chatbot':'chat.openai.com'
         }
-
+files={
+            'notas':'Notas del proyecto.odt',
+            'readme':'README.md',
+            'prueba':'Prueba.pdf'
+}
 
 
 #Declaracion de funciones
@@ -86,11 +90,11 @@ def ejecutar_SpeakIA():
                     sub.call(f'firefox {sites[site]}', shell=True) #se llama a firefox y se abre la pagina web que hayamos indicado. shell se utiliza para informar que el comando se ejecuta como en la consola
                     hablar(f'Abriendo {site}')         
         elif 'archivo' in rec:
-            
-            
-            
-            
-        elif 'escribe' in rec:    
+            for file in files:
+                if file in rec:
+                    sub.Popen([files[file]],shell=True)
+                    hablar(f'Abriendo {file}')
+     
         
         
         
