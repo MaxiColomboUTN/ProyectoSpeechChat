@@ -13,6 +13,19 @@ engine.setProperty('voices', voices[0].id) # colocamos la voz en español, se en
 engine.setProperty('rate',145)
 engine.setProperty('volume',1.0)
 
+#Diccionario
+sites={
+            'google':'www.google.com.ar', #clave:valor
+            'campus':'campus.frm.utn.edu.ar',
+            'youtube':'youtube.com',
+            'whatsapp':'web.whatsapp.com',
+            'facebook':'facebook.com',
+            'github':'github.com',
+            'chatbot':'chat.openai.com'
+        }
+
+
+
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
     engine.say(text)
@@ -67,10 +80,19 @@ def ejecutar_SpeakIA():
                     if keyboard.read_key() == "s":
                         mixer.music.stop()
                     break
-        elif 'abre' in rec:
+        elif 'abrir' in rec:
             for site in sites:
-                if site in rec:
-                    sub.call(f'start')         
-
+                if site in rec: # firefox se reemplaza por el navegador preferido
+                    sub.call(f'firefox {sites[site]}', shell=True) #se llama a firefox y se abre la pagina web que hayamos indicado. shell se utiliza para informar que el comando se ejecuta como en la consola
+                    hablar(f'Abriendo {site}')         
+        elif 'archivo' in rec:
+            
+            
+            
+            
+        elif 'escribe' in rec:    
+        
+        
+        
 if __name__ == '__main__':
     ejecutar_SpeakIA()
