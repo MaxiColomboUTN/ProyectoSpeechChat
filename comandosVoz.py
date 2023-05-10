@@ -29,16 +29,6 @@ files={
             'prueba':'Prueba.pdf',
         }
 
-#Definimos funcion escribir
-def escribir(f):
-    hablar("¿Que quieres que escriba?")
-    rec_write = escuchar()
-    f.write(rec_write + os.linesep)
-    f.close()
-    hablar("Listo, puedes revisarlo")
-    sub.Popen("notas.txt",shell=True)
-    #sub.Popen(['xdg-open', file_path])
-
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
     engine.say(text)
@@ -58,6 +48,16 @@ def escuchar():
         pass
     
     return rec
+
+#Definimos funcion escribir
+def escribir(f):
+    hablar("¿Que quieres que escriba?")
+    rec_write = escuchar()
+    f.write(rec_write + os.linesep) #escribe en el archivo lo que decimos y cada vez que escribe, lo escribe debajo de cada linea con os.linesep
+    f.close()
+    hablar("Listo, puedes revisarlo")
+    sub.Popen("notas.txt",shell=True) #guarda el archivo en el directorio del proyecto
+    #sub.Popen(['xdg-open', file_path])
 
 def ejecutar_SpeakIA():
     while True:  # nos permite que el asistente nos siga escuchando hasta que decidamos parar
@@ -106,14 +106,16 @@ def ejecutar_SpeakIA():
                     hablar(f'Abriendo {file}')
         elif 'escribe' in rec:
             try:
-                with open("nota.txt",'a') as f:
-                    escribir(f)
+                with open("nota.txt",'a') as f: #crea el archivo, 'a' es de agregar, para agregar texto, f es un alias 
+                    escribir(f) # le pasamos f, que sera nuestro archivo nota.txt
                     
-            except FileNotFoundError as e:
-                file = open("nota.txt",'w')
-                escribir(file)
-
+            except FileNotFoundError as e: #si el archivo no está creado, ocurrira una excepcion
+                file = open("nota.txt",'w') #como el archivo no esta creado, se crea en esta linea
+                escribir(file) #se llama a la funcion escribir de vuelta para que podamos escribir en nota.txt, pero le pasamos file
         
+        elif 'finaliza' in rec:
+            hablar('Nos vemos luego, que tengas un buen dia')
+            break
         
         
 if __name__ == '__main__':
