@@ -26,8 +26,8 @@ sites={
 files={
             'notas':'Notas del proyecto.odt',
             'readme':'README.md',
-            'prueba':'Prueba.pdf'
-}
+            'prueba':'Prueba.pdf',
+        }
 
 
 #Declaracion de funciones
@@ -92,9 +92,11 @@ def ejecutar_SpeakIA():
         elif 'archivo' in rec:
             for file in files:
                 if file in rec:
-                    sub.Popen([files[file]],shell=True)
+                    file_path = files[file]  # Ruta absoluta del archivo
+                    sub.Popen(['xdg-open', file_path]) # es un comando en Ubuntu que se utiliza para abrir archivos con la aplicación predeterminada asociada a su tipo de archivo.
                     hablar(f'Abriendo {file}')
-     
+        
+
         
         
         
