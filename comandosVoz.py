@@ -24,7 +24,7 @@ sites={
             'chatbot':'chat.openai.com'
         }
 files={
-            'notas':'../Notas del proyecto.odt',
+            'notas':'Notas del proyecto.odt',
             'readme':'README.md',
             'prueba':'Prueba.pdf',
         }
