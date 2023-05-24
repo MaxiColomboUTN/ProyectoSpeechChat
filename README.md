@@ -28,6 +28,14 @@ LINK DE ACCESO A JIRA: https://brunosacchetti.atlassian.net/jira/software/projec
 • Integración con servicios y aplicaciones: Facilitar la integración con diferentes servicios y aplicaciones populares, como búsqueda en línea, reproducción de música, navegación por Internet, control del hogar inteligente, etc., para ampliar las capacidades del sistema de comandos de voz.
 
 
+## Planificación del proyecto
 
+    • Establecer objetivos: El primer paso es definir los objetivos del proyecto, como por ejemplo, los comandos de voz que se desean implementar, los dispositivos en los que se ejecutará y los resultados que se esperan lograr.
+      
+    • Identificar los recursos necesarios: Para implementar los comandos de voz, se necesitan algunos recursos técnicos, como micrófonos, software de reconocimiento de voz y hardware adecuado. Identificar estos recursos es esencial para asegurar que el proyecto sea exitoso.
+      
+    • Definir el calendario y los plazos: Establecer un cronograma para el proyecto es fundamental para cumplir con los objetivos y entregar el proyecto a tiempo. También es importante establecer plazos claros para cada tarea y asegurarse de que se cumplan.
+      
+    • Monitorear y controlar el progreso: Es importante monitorear y controlar el progreso del proyecto en todo momento para garantizar que se estén cumpliendo los objetivos y que se estén tomando medidas correctivas en caso de desviaciones.
    
  
