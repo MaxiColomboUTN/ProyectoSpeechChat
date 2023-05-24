@@ -16,6 +16,6 @@ PROCESOS PARA QUE FUNCIONE EL PROYECTO(Instalaciones,etc)
 
 4-Correr Virtual Env (Source env/bin/activate)
 
-5-Instalar Speech Recognition
+5-Instalar e importar Speech Recognition
 
-6-Instalar librerias
+6-Instalar e importar librerias(pyttsx3,pywhatkit,wikipedia,datetime,pynput,keyboard,subprocess,from pygame import mixer)
