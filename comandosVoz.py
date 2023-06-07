@@ -29,15 +29,14 @@ files={
             'prueba':'Prueba.pdf',
         }
 programs = {
-    'visual' : r'Visual Studio Code',
-    'firefox' : r'Mozilla Firefox',
-    'documentos' : r'LibreOffice Writer',
-    'presentacion' : r'LibreOffice Impress',
-    'calculadora' : r'Calculadora',
-    'calendario' : r'Calendario',
-    'configuracion' : r'Configuracion',
-    'terminal' : r'Terminal',
-    'editorDeTexto' : r'Editor de Texto'
+    'visual' : r"/usr/bin/code",
+    'firefox' : r"/snap/bin/firefox",
+    'documentos' : r"/usr/bin/libreoffice",
+    'calculadora' : r"/usr/bin/gnome-calculator",
+    'calendario' : r"/usr/bin/gnome-calendar",
+    'terminal' : r"/usr/bin/gnome-terminal",
+    'editor de texto' : r"/usr/bin/gedit",
+    'sudoku' : r"/usr/games/gnome-sudoku"
 }
 
 #Declaracion de funciones
@@ -111,9 +110,8 @@ def ejecutar_SpeakIA():
                     hablar(f'Abriendo {site}')         
             for app in programs:
                 if app in rec:
-                    app_path = programs[app]  # Ruta absoluta del archivo
-                    sub.Popen(['xdg-open', app_path]) 
                     hablar(f'Abriendo {app}')
+                    sub.Popen(programs[app])
         elif 'archivo' in rec:
             for file in files:
                 if file in rec:
