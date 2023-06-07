@@ -28,6 +28,17 @@ files={
             'readme':'README.md',
             'prueba':'Prueba.pdf',
         }
+programs = {
+    'visual' : r'Visual Studio Code',
+    'firefox' : r'Mozilla Firefox',
+    'documentos' : r'LibreOffice Writer',
+    'presentacion' : r'LibreOffice Impress',
+    'calculadora' : r'Calculadora',
+    'calendario' : r'Calendario',
+    'configuracion' : r'Configuracion',
+    'terminal' : r'Terminal',
+    'editorDeTexto' : r'Editor de Texto'
+}
 
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
@@ -98,6 +109,11 @@ def ejecutar_SpeakIA():
                 if site in rec: # firefox se reemplaza por el navegador preferido
                     sub.call(f'firefox {sites[site]}', shell=True) #se llama a firefox y se abre la pagina web que hayamos indicado. shell se utiliza para informar que el comando se ejecuta como en la consola
                     hablar(f'Abriendo {site}')         
+            for app in programs:
+                if app in rec:
+                    app_path = programs[app]  # Ruta absoluta del archivo
+                    sub.Popen(['xdg-open', app_path]) 
+                    hablar(f'Abriendo {app}')
         elif 'archivo' in rec:
             for file in files:
                 if file in rec:
