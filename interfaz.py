@@ -1,7 +1,24 @@
 import speech_recognition as sr #le colocamos un alias a nuestra libreria
-import pyttsx3, pywhatkit, wikipedia, datetime, keyboard, os #pyaudio no hace falta importarla
+import pyttsx3, pywhatkit, wikipedia, datetime,keyboard, os #pyaudio no hace falta importarla
 import subprocess as sub #nos permite ejecutar otros programas de nuestra computadora
-from pygame import mixer
+from pygame import mixer #para poder reproducir la musica de alarma
+from tkinter import * #importamos todo, nos servira para poder hacer una interfaz grafica 
+from PIL import Image, ImageTk
+
+main_window = Tk() #ventana principal donde estara todo
+main_window.title("Speech Recognition") #titulo de la ventana
+
+main_window.geometry("800x400") #definimos el alto y ancho en pixeles
+main_window.resizable(0,0) #indicamos que la ventana no permita agrandarse
+main_window.configure(bg='#2c3e50') #definimos el color del fondo, utilizamos https://uigradients.com
+
+label_title = Label(main_window, text="Speech Recognition AI", bg="#bdc3c7", fg="#283c86", font=('Times New Roman', 30, 'bold'))
+
+label_title.pack(pady=10) #el label pasa a ser un bloque, y lo coloca en el centro, le da un espaciado de 10 px
+
+imagenIa = ImageTk.PhotoImage(Image.open("ia.jpg"))
+window_photo = Label(main_window, image=imagenIa)
+window_photo.pack(pady=5)
 
 #Declaracion de variables
 name = "Juan" #le colocamos un nombre, revisar nombre
@@ -9,9 +26,9 @@ listener = sr.Recognizer() #inicializamos Recognizer y lo asignamos a listener
 engine = pyttsx3.init() # inicializamos nuestra libreria pyttsx3
 
 voices = engine.getProperty('voices')
-engine.setProperty('voices', voices[0].id) # voz de hombre con 0, 1 de mujer
-engine.setProperty('rate', 145) # velocidad de la voz
-engine.setProperty('volume', 1.0) # volumen de la voz
+engine.setProperty('voices', voices[0].id) # colocamos la voz en español, se encuentra en la posicion 0 de voices.
+engine.setProperty('rate',145)
+engine.setProperty('volume',1.0)
 
 #Diccionario
 sites={
@@ -94,8 +111,7 @@ def ejecutar_SpeakIA():
                     mixer.init() 
                     mixer.music.load("alarma.mp3") # mixer nos permite cargar un sonido en formato .mp3
                     mixer.music.play()
-                    #REVISAR COMO HACER PARA PODER EJECUTARLO
-                    if keyboard.read_key() == "s":  
+                    if keyboard.read_key() == "s":
                         mixer.music.stop()
                         break
         elif 'abrir' in rec:
@@ -125,7 +141,5 @@ def ejecutar_SpeakIA():
         elif 'finaliza' in rec:
             hablar('Nos vemos luego, que tengas un buen dia')
             break
-     
-        
-if __name__ == '__main__':
-    ejecutar_SpeakIA()
+main_window.mainloop() #indicamos que todo lo que se encuentre antes de mainloop se ejecute, vendria a ser nuestra funcion main 
+
