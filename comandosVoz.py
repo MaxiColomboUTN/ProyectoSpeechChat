@@ -49,7 +49,7 @@ def escuchar():
         with sr.Microphone() as source: #toma el microfono como fuente
             print("Escuchando...")
             pc = listener.listen(source) # le indicamos que escuche desde el microfono
-            rec = listener.recognize_google(pc,language="es-AR") #idioma español argentina
+            rec = listener.recognize_google(pc,language="[b'\x05es']") #idioma español argentina
             rec = rec.lower() #transforma el texto en minusculas para evitar problemas
             if name in rec:
                 rec = rec.replace(name, '') #remplaza el nombre por vacio, se hace esto para evitar que nuestro asistente repita lo que nosotros le decimos

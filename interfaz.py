@@ -4,17 +4,37 @@ import subprocess as sub #nos permite ejecutar otros programas de nuestra comput
 from pygame import mixer #para poder reproducir la musica de alarma
 from tkinter import * #importamos todo, nos servira para poder hacer una interfaz grafica 
 from PIL import Image, ImageTk
+import threading as tr
 
 main_window = Tk() #ventana principal donde estara todo
 main_window.title("Speech Recognition") #titulo de la ventana
 
-main_window.geometry("800x400") #definimos el alto y ancho en pixeles
+main_window.geometry("1000x800") #definimos el alto y ancho en pixeles
 main_window.resizable(0,0) #indicamos que la ventana no permita agrandarse
 main_window.configure(bg='#2c3e50') #definimos el color del fondo, utilizamos https://uigradients.com
+
+#las triples comillas nos permiten mostrar un texto tal cual lo escribimos
+comandos = """ 
+    Comandos que puedes utilizar:
+        - Reproduce..(cancion)
+        - Busca..(algo)
+        - Abre..(página web o app)
+        - Alarma..(hora en 24Hrs)
+        - Archivo..(nombre)
+        - Termina
+"""
+
 
 label_title = Label(main_window, text="Speech Recognition AI", bg="#bdc3c7", fg="#283c86", font=('Times New Roman', 30, 'bold'))
 
 label_title.pack(pady=10) #el label pasa a ser un bloque, y lo coloca en el centro, le da un espaciado de 10 px
+
+canvas_comandos = Canvas(bg="#2b5876", height=220, width=260)
+canvas_comandos.place(x=20,y=75)
+canvas_comandos.create_text(90,80, text=comandos, fill="#F2F2F2", font='Arial 10')
+
+text_info = Text(main_window, bg="#2b5876", fg="#F2F2F2")
+text_info.place(x=20, y=300, height=470, width=262)
 
 imagenIa = ImageTk.PhotoImage(Image.open("ia.jpg"))
 window_photo = Label(main_window, image=imagenIa)
@@ -61,10 +81,17 @@ def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un param
     engine.say(text)
     engine.runAndWait()
 
+def leer_y_hablar(): #leera el texto de la caja de texto y hablara
+    text = text_info.get("1.0", "end") #obtiene todo el texto de principio a fin
+    hablar(text)
+    
+def escribirTexto(text_wiki):
+    text_info.insert(INSERT, text_wiki) #inserta el texto en la caja de texto
+
 def escuchar():
     try:
         with sr.Microphone() as source: #toma el microfono como fuente
-            print("Escuchando...")
+            hablar("Te escucho")
             pc = listener.listen(source) # le indicamos que escuche desde el microfono
             rec = listener.recognize_google(pc,language="es-AR") #idioma español argentina
             rec = rec.lower() #transforma el texto en minusculas para evitar problemas
@@ -86,6 +113,26 @@ def escribir(f):
     sub.Popen("notas.txt",shell=True) #guarda el archivo en el directorio del proyecto
     #sub.Popen(['xdg-open', file_path])
 
+def clock(rec):
+    num = rec.replace('alarma', '')
+    num = num.strip() #strip elimina el espacio vacio de arriba para que la hora se pueda asignar correctamente
+    hablar("Se estableció la alarma a las " + num + " horas")
+    if num[0] != '0' and len(num) < 5:
+        num = '0' + num
+    print(num)
+    while True:
+        if datetime.datetime.now().strftime('%H:%M') == num:  #obtiene la hora actual del sistema y la devuelve en un formato de cadena de texto.
+            # strftime devolverá una cadena que contiene las horas y los minutos actuales en formato de 24 horas. No se puede comparar un objeto de tipo fecha y hora con un string.
+            print("¡¡¡ Es hora de levantarse !!!")
+            mixer.init() 
+            mixer.music.load("alarma.mp3") # mixer nos permite cargar un sonido en formato .mp3
+            mixer.music.play()
+        else:
+            continue #verificamos que la hora del sistema sea igual a la hora que solicitamos para la alarma
+        if keyboard.read_key() == "s":
+                mixer.music.stop()
+                break
+            
 def ejecutar_SpeakIA():
     while True:  # nos permite que el asistente nos siga escuchando hasta que decidamos parar
         rec = escuchar()
@@ -100,20 +147,11 @@ def ejecutar_SpeakIA():
             wiki = wikipedia.summary(busqueda, 1) #resume la informacion que buscamos de busqueda, el numero indica la cantidad de oraciones.
             print(busqueda + ": " + wiki)
             hablar(wiki) # nos comenta la informacion que ha buscado
+            escribirTexto(busqueda + ": " + wiki)
+            break #para que cuando busque algo, haga un break y nos muestre el texto, sino seguira escuchando y no podremos ver lo que nos escriba
         elif 'alarma' in rec:  # nos programa una alarma, se debe decir por ejemplo: "alarma 16"
-            alarma = rec.replace('alarma', '')
-            alarma = alarma.strip() #strip elimina el espacio vacio de arriba para que la hora se pueda asignar correctamente
-            hablar("Se estableció la alarma a las " + alarma + " horas")
-            while True:
-                if datetime.datetime.now().strftime('%H:%M') == alarma:  #obtiene la hora actual del sistema y la devuelve en un formato de cadena de texto.
-                    # strftime devolverá una cadena que contiene las horas y los minutos actuales en formato de 24 horas. No se puede comparar un objeto de tipo fecha y hora con un string.
-                    print("¡¡¡ Es hora de levantarse !!!")
-                    mixer.init() 
-                    mixer.music.load("alarma.mp3") # mixer nos permite cargar un sonido en formato .mp3
-                    mixer.music.play()
-                    if keyboard.read_key() == "s":
-                        mixer.music.stop()
-                        break
+            t = tr.Thread(target=clock, args=(rec,)) # usamos hilos para poder ejecutar otras cosas a pesar de programar una alarma
+            t.start()
         elif 'abrir' in rec:
             for site in sites:
                 if site in rec: # firefox se reemplaza por el navegador preferido
@@ -139,7 +177,42 @@ def ejecutar_SpeakIA():
                 escribir(file) #se llama a la funcion escribir de vuelta para que podamos escribir en nota.txt, pero le pasamos file
         
         elif 'finaliza' in rec:
-            hablar('Nos vemos luego, que tengas un buen dia')
+            hablar('Hasta luego, que tengas un buen dia')
             break
+
+#definicion de funciones para botones
+#REVISAR
+def cambiar_voz(id):
+    engine.setProperty('voices', voices[id].id) 
+    engine.setProperty('rate', 145) # velocidad de la voz
+    engine.setProperty('volume', 1.0) # volumen de la voz    
+    hablar("Hola soy la voz de tu asistente virtual")
+    
+def mexican_voice():
+    cambiar_voz(26)
+
+def spanish_voice():
+    cambiar_voz(26)
+
+def english_voice():
+    cambiar_voz(26)
+
+#creacion de botones
+#REVISAR
+button_voice_mx = Button(main_window, text="Voz México", fg="white", bg="#0f9b0f", font=("Arial", 12, "bold"), command=mexican_voice)
+button_voice_mx.place(x=725, y=75, width=100, height=30)
+
+button_voice_es = Button(main_window, text="Voz España", fg="white", bg="#c31432", font=("Arial", 12, "bold"), command=spanish_voice)    
+button_voice_es.place(x=725, y=120,width=100,height=30)
+
+button_voice_us = Button(main_window, text="Voz EEUU", fg="white", bg="#0082c8", font=("Arial", 12, "bold"), command=english_voice)    
+button_voice_us.place(x=725, y=165,width=100,height=30)    
+
+button_listen = Button(main_window, text="Escuchar", fg="white", bg="#4CA1AF", font=("Arial", 15, "bold"), width=20, height=2, command=ejecutar_SpeakIA)
+button_listen.pack(pady=10)  
+
+button_speak = Button(main_window, text="Hablar", fg="white", bg="#D39D38", font=("Arial", 12, "bold"), command=leer_y_hablar)
+button_speak.place(x=725, y=210, width=100, height=30)
+        
 main_window.mainloop() #indicamos que todo lo que se encuentre antes de mainloop se ejecute, vendria a ser nuestra funcion main 
 
