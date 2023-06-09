@@ -76,9 +76,24 @@ engine.setProperty('volume',1.0)
 #    'sudoku' : r"/usr/games/gnome-sudoku"
 #}
 
-site = dict()
+def charge_data(name_dict, name_file):
+    try:
+        with open(name_file) as f:
+            for line in f:
+                (key,val) = line.split(',')
+                val = val.rstrip('\n')
+                name_dict[key] = val
+    except FileNotFoundError:
+        pass
+
+sites = dict()
+charge_data(sites,"paginasWeb.txt")
+
 files = dict()
+charge_data(sites,"archivos.txt")
+
 programs = dict()
+charge_data(sites,"apps.txt")
 
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
@@ -93,18 +108,18 @@ def escribirTexto(text_wiki):
     text_info.insert(INSERT, text_wiki) #inserta el texto en la caja de texto
 
 def escuchar():
+    listener = sr.Recognizer()
+    with sr.Microphone() as source: #toma el microfono como fuente
+        listener.adjust_for_ambient_noise(source)
+        #hablar("Te escucho")
+        pc = listener.listen(source) # le indicamos que escuche desde el microfono
     try:
-        with sr.Microphone() as source: #toma el microfono como fuente
-            hablar("Te escucho")
-            pc = listener.listen(source) # le indicamos que escuche desde el microfono
-            rec = listener.recognize_google(pc,language="es-AR") #idioma español argentina
-            rec = rec.lower() #transforma el texto en minusculas para evitar problemas
-            if name in rec:
-                rec = rec.replace(name, '') #remplaza el nombre por vacio, se hace esto para evitar que nuestro asistente repita lo que nosotros le decimos
-    
-    except:
-        pass
-    
+        rec = listener.recognize_google(pc,language="es-AR") #idioma español argentina
+        rec = rec.lower() #transforma el texto en minusculas para evitar problemas
+    except sr.UnknownValueError:
+        print("No te entendi, intenta de nuevo")
+    except sr.RequestError as e:
+        print("error")
     return rec
 
 #Definimos funcion escribir
@@ -138,8 +153,8 @@ def abrir_archivos():
     pathf_label = Label(window_files, text="Directorio del archivo", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
     pathf_label.pack(pady=2)
     
-    path_entry = Entry(window_files, width=50)
-    path_entry.pack(pady=1) 
+    pathf_entry = Entry(window_files, width=50)
+    pathf_entry.pack(pady=1) 
     
     save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1, command= add_files)
     save_button.pack(pady=4)
@@ -165,8 +180,8 @@ def abrir_apps():
     patha_label = Label(window_files, text="Directorio de la aplicacion", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
     patha_label.pack(pady=2)
     
-    path_entry = Entry(window_files, width=50)
-    path_entry.pack(pady=1) 
+    patha_entry = Entry(window_files, width=50)
+    patha_entry.pack(pady=1) 
     
     save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1, command= add_apps)
     save_button.pack(pady=4)
@@ -193,8 +208,8 @@ def abrir_sitios():
     paths_label = Label(window_files, text="URL de la pagina web", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
     paths_label.pack(pady=2)
     
-    path_entry = Entry(window_files, width=50)
-    path_entry.pack(pady=1) 
+    paths_entry = Entry(window_files, width=50)
+    paths_entry.pack(pady=1) 
     
     save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1, command= add_site)
     save_button.pack(pady=4)
@@ -204,6 +219,8 @@ def add_files():
     path_file = pathf_entry.get().strip()
 
     files[name_file] = path_file
+    save_data(name_file, path_file, "archivos.txt")
+    
     namefile_entry.delete(0,"end")
     pathf_entry.delete(0,"end")
     
@@ -212,6 +229,8 @@ def add_apps():
     path_app = patha_entry.get().strip()
 
     programs[name_app] = path_app
+    save_data(name_app, path_app, "apps.txt")
+    
     nameapps_entry.delete(0,"end")
     patha_entry.delete(0,"end")
 
@@ -219,9 +238,43 @@ def add_site():
     name_site = namesite_entry.get().strip() #cortamos espacios en blancos
     url_site = paths_entry.get().strip()
 
-    site[name_site] = url_site
+    sites[name_site] = url_site
+    save_data(name_site, url_site, "paginasWeb.txt")
+    
     namesite_entry.delete(0,"end")
     paths_entry.delete(0,"end")
+    
+def save_data(key, value, file_name):
+    try:
+        with open(file_name, 'a') as f:
+                    f.write(key + "," + value + "\n")
+    except FileNotFoundError as f:
+        file = open(file_name, 'a')
+        file.write(key + "," + value + "\n")
+        
+def talk_sites():
+    if bool(sites) == True:
+        hablar("Has agregado las siguientes paginas web")
+        for site in sites:
+            hablar(site)
+    else:
+        hablar("No has agregado ninguna pagina web")
+
+def talk_apps():
+    if bool(programs) == True:
+        hablar("Has agregado las siguientes aplicaciones")
+        for program in programs:
+            hablar(program)
+    else:
+        hablar("No has agregado ninguna aplicacion")
+
+def talk_files():
+    if bool(files) == True:
+        hablar("Has agregado los siguientes archivos")
+        for file in files:
+            hablar(file)
+    else:
+        hablar("No has agregado ningun archivo")
 
 def clock(rec):
     num = rec.replace('alarma', '')
@@ -245,7 +298,11 @@ def clock(rec):
             
 def ejecutar_SpeakIA():
     while True:  # nos permite que el asistente nos siga escuchando hasta que decidamos parar
-        rec = escuchar()
+        try:
+            rec = escuchar()
+        except UnboundLocalError:
+            hablar("No te entendí, intenta de nuevo")#
+            continue
         if 'reproduce' in rec: #si escucha la palabra reproduce, hara lo siguiente
             music = rec.replace('reproduce', '') # se hace esto para evitar que nuestro asistente repita lo que nosotros le decimos
             print("Reproduciendo " + music)
@@ -263,20 +320,30 @@ def ejecutar_SpeakIA():
             t = tr.Thread(target=clock, args=(rec,)) # usamos hilos para poder ejecutar otras cosas a pesar de programar una alarma
             t.start()
         elif 'abrir' in rec:
-            for site in sites:
-                if site in rec: # firefox se reemplaza por el navegador preferido
-                    sub.call(f'firefox {sites[site]}', shell=True) #se llama a firefox y se abre la pagina web que hayamos indicado. shell se utiliza para informar que el comando se ejecuta como en la consola
-                    hablar(f'Abriendo {site}')         
-            for app in programs:
-                if app in rec:
-                    hablar(f'Abriendo {app}')
-                    sub.Popen(programs[app])
+            task = rec.replace('abrir', '').strip()
+            if task in sites:
+                for task in sites:
+                    if task in rec: # firefox se reemplaza por el navegador preferido
+                        sub.call(f'firefox {sites[task]}', shell=True) #se llama a firefox y se abre la pagina web que hayamos indicado. shell se utiliza para informar que el comando se ejecuta como en la consola
+                        hablar(f'Abriendo {task}')  
+            elif task in programs:      
+                for task in programs:
+                    if task in rec:
+                        hablar(f'Abriendo {task}')
+                        sub.Popen(programs[task])
+            else:
+                hablar("Todavia no has agregado esa aplicacion o pagina web")
+                
         elif 'archivo' in rec:
-            for file in files:
-                if file in rec:
-                    file_path = files[file]  # Ruta absoluta del archivo
-                    sub.Popen(['xdg-open', file_path]) # es un comando en Ubuntu que se utiliza para abrir archivos con la aplicación predeterminada asociada a su tipo de archivo.
-                    hablar(f'Abriendo {file}')
+            file = rec.replace('archivo', '').strip
+            if file in files:
+                for file in files:
+                    if file in rec:
+                        file_path = files[file]  # Ruta absoluta del archivo
+                        sub.Popen(['xdg-open', file_path]) # es un comando en Ubuntu que se utiliza para abrir archivos con la aplicación predeterminada asociada a su tipo de archivo.
+                        hablar(f'Abriendo {file}')
+            else:
+                hablar("Todavia no has agregado este archivo")
         elif 'escribe' in rec:
             try:
                 with open("nota.txt",'a') as f: #crea el archivo, 'a' es de agregar, para agregar texto, f es un alias 
@@ -287,9 +354,56 @@ def ejecutar_SpeakIA():
                 escribir(file) #se llama a la funcion escribir de vuelta para que podamos escribir en nota.txt, pero le pasamos file
         
         elif 'finaliza' in rec:
-            hablar('Hasta luego, que tengas un buen dia')
+            hablar('¿Que deseas cerrar?')
+            rec = escuchar()
+            cierra(rec)
             break
+        
+    main_window.update()
 
+#Guardamos nuestro nombre
+def give_my_name():
+    hablar("Hola, ¿Cuál es tu nombre?")
+    name = escuchar()
+    name = name.strip()
+    hablar(f"Bienvenido {name}")
+    try:
+        with open("name.txt",'w') as f:
+            f.write(name)
+    except FileNotFoundError:
+        file = open("name.txt",'w')
+        file.write(name) 
+    
+#dira nuestro nombre cuando iniciemos el programa    
+def say_my_name():
+    if os.path.exists("name.txt"):
+        with open("name.txt",'r') as f:
+            for name in f:
+                hablar(f"Hola, bienvenido {name}")
+    else:
+        give_my_name()
+
+def thread_hello():
+    t = tr.Thread(target=say_my_name)
+    t.start()
+    
+thread_hello()
+
+def cierra(rec):
+    for task in programs:
+        kill_task = programs[task].split('\\')
+        kill_task = kill_task[-1] #obtenemos el ultimo elemento de la lista
+        if task in rec:
+            sub.call(['pkill', '-f', programs[task]]) 
+            hablar(f'Cerrando {task}')
+        #if 'todo' in rec:
+        #    sub.call(f'pkill {kill_task} /F', shell=True)
+        #    hablar(f'Cerrando {task}')
+    if 'termina' in rec:
+        sub.call(['pkill', '-f', 'python3'], shell=True)
+        hablar(f'Adiós')
+            
+     
 #definicion de funciones para botones
 #REVISAR
 def cambiar_voz(id):
@@ -319,7 +433,8 @@ button_voice_us = Button(main_window, text="Voz EEUU", fg="white", bg="#0082c8",
 button_voice_us.place(x=750, y=165,width=150,height=30)    
 
 button_listen = Button(main_window, text="Escuchar", fg="white", bg="#4CA1AF", font=("Arial", 15, "bold"), width=20, height=2, command=ejecutar_SpeakIA)
-button_listen.pack(pady=10)  
+button_listen.pack(pady=10)
+button_listen.place(x=375, y=450)  
 
 button_speak = Button(main_window, text="Hablar", fg="white", bg="#D39D38", font=("Arial", 12, "bold"), command=leer_y_hablar)
 button_speak.place(x=750, y=210, width=150, height=30)
@@ -330,9 +445,17 @@ button_add_files.place(x=725, y=255, width=200, height=30)
 button_add_apps = Button(main_window, text="Agregar Aplicaciones", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_apps)
 button_add_apps.place(x=725, y=300, width=200, height=30)
 
-button_add_pages = Button(main_window, text="Agregar sitios web", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_sitios)
+button_add_pages = Button(main_window, text="Agregar Páginas Web", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_sitios)
 button_add_pages.place(x=725, y=345, width=200, height=30)
 
+button_tell_pages = Button(main_window, text="Páginas agregadas", fg="black", bg="#DAD299", font=("Arial", 12, "bold"), command=talk_sites)
+button_tell_pages.place(x=300, y=325, width=195, height=35)
+
+button_tell_apps = Button(main_window, text="Apps agregadas", fg="black", bg="#DAD299", font=("Arial", 12, "bold"), command=talk_apps)
+button_tell_apps.place(x=500, y=325, width=195, height=35)
+
+button_tell_files = Button(main_window, text="Archivos agregados", fg="black", bg="#DAD299", font=("Arial", 12, "bold"), command=talk_files)
+button_tell_files.place(x=400, y=365, width=195, height=35)
 
 main_window.mainloop() #indicamos que todo lo que se encuentre antes de mainloop se ejecute, vendria a ser nuestra funcion main 
 

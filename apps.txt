@@ -1,0 +1,2 @@
+firefox,/snap/bin/firefox
+libre,/usr/bin/libreoffice
