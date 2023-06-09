@@ -51,30 +51,34 @@ engine.setProperty('rate',145)
 engine.setProperty('volume',1.0)
 
 #Diccionario
-sites={
-            'google':'www.google.com.ar', #clave:valor
-            'campus':'campus.frm.utn.edu.ar',
-            'youtube':'youtube.com',
-            'whatsapp':'web.whatsapp.com',
-            'facebook':'facebook.com',
-            'github':'github.com',
-            'chatbot':'chat.openai.com'
-        }
-files={
-            'notas':'Notas del proyecto.odt',
-            'readme':'README.md',
-            'prueba':'Prueba.pdf',
-        }
-programs = {
-    'visual' : r"/usr/bin/code",
-    'firefox' : r"/snap/bin/firefox",
-    'documentos' : r"/usr/bin/libreoffice",
-    'calculadora' : r"/usr/bin/gnome-calculator",
-    'calendario' : r"/usr/bin/gnome-calendar",
-    'terminal' : r"/usr/bin/gnome-terminal",
-    'editor de texto' : r"/usr/bin/gedit",
-    'sudoku' : r"/usr/games/gnome-sudoku"
-}
+#sites={
+            #'google':'www.google.com.ar', #clave:valor
+            #'campus':'campus.frm.utn.edu.ar',
+            #'youtube':'youtube.com',
+            #'whatsapp':'web.whatsapp.com',
+            #'facebook':'facebook.com',
+            #'github':'github.com',
+            #'chatbot':'chat.openai.com'
+        #}
+#files={
+#            'notas':'Notas del proyecto.odt',
+#            'readme':'README.md',
+#            'prueba':'Prueba.pdf',
+#        }
+#programs = {
+#    'visual' : r"/usr/bin/code",
+#    'firefox' : r"/snap/bin/firefox",
+#    'documentos' : r"/usr/bin/libreoffice",
+#    'calculadora' : r"/usr/bin/gnome-calculator",
+#    'calendario' : r"/usr/bin/gnome-calendar",
+#    'terminal' : r"/usr/bin/gnome-terminal",
+#    'editor de texto' : r"/usr/bin/gedit",
+#    'sudoku' : r"/usr/games/gnome-sudoku"
+#}
+
+site = dict()
+files = dict()
+programs = dict()
 
 #Declaracion de funciones
 def hablar(text): #Va a hablar nuestra app, siempre y cuando le pasemos un parametro
@@ -112,6 +116,38 @@ def escribir(f):
     hablar("Listo, puedes revisarlo")
     sub.Popen("notas.txt",shell=True) #guarda el archivo en el directorio del proyecto
     #sub.Popen(['xdg-open', file_path])
+
+def abrir_archivos():
+    window_files = Toplevel()
+    window_files.title("Agregar archivos")
+    window_files.configure(bg="#2C5364")
+    window_files.geometry("500x300")
+    window_files.resizable(0,0)
+    main_window.eval(f'tk::PlaceWindow {str(window_files)} center')
+    
+    title_label = Label(window_files, text="Agrega un archivo", fg="white", bg="#2C5364", font=('Arial',15,'bold'))
+    title_label.pack(pady=3)  
+    
+    name_label = Label(window_files, text="Nombre del archivo", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
+    name_label.pack(pady=2)
+    
+    namefile_entry = Entry(window_files)
+    namefile_entry.pack(pady=1) 
+    
+    path_label = Label(window_files, text="Directorio del archivo", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
+    path_label.pack(pady=2)
+    
+    path_entry = Entry(window_files, width=50)
+    path_entry.pack(pady=1) 
+    
+    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1)#, command= add_files)
+    save_button.pack(pady=4)
+    
+def abrir_apps():
+    pass
+
+def abrir_sitios():
+    pass
 
 def clock(rec):
     num = rec.replace('alarma', '')
@@ -197,22 +233,31 @@ def spanish_voice():
 def english_voice():
     cambiar_voz(26)
 
-#creacion de botones
+#CREACION DE BOTONES
 #REVISAR
 button_voice_mx = Button(main_window, text="Voz México", fg="white", bg="#0f9b0f", font=("Arial", 12, "bold"), command=mexican_voice)
-button_voice_mx.place(x=725, y=75, width=100, height=30)
+button_voice_mx.place(x=750, y=75, width=150, height=30)
 
 button_voice_es = Button(main_window, text="Voz España", fg="white", bg="#c31432", font=("Arial", 12, "bold"), command=spanish_voice)    
-button_voice_es.place(x=725, y=120,width=100,height=30)
+button_voice_es.place(x=750, y=120,width=150,height=30)
 
 button_voice_us = Button(main_window, text="Voz EEUU", fg="white", bg="#0082c8", font=("Arial", 12, "bold"), command=english_voice)    
-button_voice_us.place(x=725, y=165,width=100,height=30)    
+button_voice_us.place(x=750, y=165,width=150,height=30)    
 
 button_listen = Button(main_window, text="Escuchar", fg="white", bg="#4CA1AF", font=("Arial", 15, "bold"), width=20, height=2, command=ejecutar_SpeakIA)
 button_listen.pack(pady=10)  
 
 button_speak = Button(main_window, text="Hablar", fg="white", bg="#D39D38", font=("Arial", 12, "bold"), command=leer_y_hablar)
-button_speak.place(x=725, y=210, width=100, height=30)
-        
+button_speak.place(x=750, y=210, width=150, height=30)
+
+button_add_files = Button(main_window, text="Agregar Archivos", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_archivos)
+button_add_files.place(x=725, y=255, width=200, height=30)
+
+button_add_apps = Button(main_window, text="Agregar Aplicaciones", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_apps)
+button_add_apps.place(x=725, y=300, width=200, height=30)
+
+button_add_pages = Button(main_window, text="Agregar sitios web", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_sitios)
+button_add_pages.place(x=725, y=345, width=200, height=30)
+
 main_window.mainloop() #indicamos que todo lo que se encuentre antes de mainloop se ejecute, vendria a ser nuestra funcion main 
 
