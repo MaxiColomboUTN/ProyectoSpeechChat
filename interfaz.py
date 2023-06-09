@@ -118,6 +118,7 @@ def escribir(f):
     #sub.Popen(['xdg-open', file_path])
 
 def abrir_archivos():
+    global namefile_entry, pathf_entry #hacemos globales nuestras variables
     window_files = Toplevel()
     window_files.title("Agregar archivos")
     window_files.configure(bg="#2C5364")
@@ -134,16 +135,17 @@ def abrir_archivos():
     namefile_entry = Entry(window_files)
     namefile_entry.pack(pady=1) 
     
-    path_label = Label(window_files, text="Directorio del archivo", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
-    path_label.pack(pady=2)
+    pathf_label = Label(window_files, text="Directorio del archivo", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
+    pathf_label.pack(pady=2)
     
     path_entry = Entry(window_files, width=50)
     path_entry.pack(pady=1) 
     
-    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1)#, command= add_files)
+    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1, command= add_files)
     save_button.pack(pady=4)
     
 def abrir_apps():
+    global nameapps_entry, patha_entry 
     window_files = Toplevel()
     window_files.title("Agregar aplicaciones")
     window_files.configure(bg="#2C5364")
@@ -157,20 +159,21 @@ def abrir_apps():
     name_label = Label(window_files, text="Nombre del la aplicacion", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
     name_label.pack(pady=2)
     
-    namefile_entry = Entry(window_files)
-    namefile_entry.pack(pady=1) 
+    nameapps_entry = Entry(window_files)
+    nameapps_entry.pack(pady=1) 
     
-    path_label = Label(window_files, text="Directorio de la aplicacion", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
-    path_label.pack(pady=2)
+    patha_label = Label(window_files, text="Directorio de la aplicacion", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
+    patha_label.pack(pady=2)
     
     path_entry = Entry(window_files, width=50)
     path_entry.pack(pady=1) 
     
-    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1)#, command= add_apps)
+    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1, command= add_apps)
     save_button.pack(pady=4)
     
 
 def abrir_sitios():
+    global namesite_entry, paths_entry 
     window_files = Toplevel()
     window_files.title("Agregar aplicaciones")
     window_files.configure(bg="#2C5364")
@@ -184,17 +187,41 @@ def abrir_sitios():
     name_label = Label(window_files, text="Nombre de la pagina web", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
     name_label.pack(pady=2)
     
-    namefile_entry = Entry(window_files)
-    namefile_entry.pack(pady=1) 
+    namesite_entry = Entry(window_files)
+    namesite_entry.pack(pady=1) 
     
-    path_label = Label(window_files, text="URL de la pagina web", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
-    path_label.pack(pady=2)
+    paths_label = Label(window_files, text="URL de la pagina web", fg="white", bg="#2C5364", font=('Arial',11,'bold'))
+    paths_label.pack(pady=2)
     
     path_entry = Entry(window_files, width=50)
     path_entry.pack(pady=1) 
     
-    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1)#, command= add_site)
+    save_button = Button(window_files, text="Guardar", bg= "#283c86", fg="white", font=('Arial',15,'bold'), width=8, height=1, command= add_site)
     save_button.pack(pady=4)
+
+def add_files():
+    name_file = namefile_entry.get().strip() #cortamos espacios en blancos
+    path_file = pathf_entry.get().strip()
+
+    files[name_file] = path_file
+    namefile_entry.delete(0,"end")
+    pathf_entry.delete(0,"end")
+    
+def add_apps():
+    name_app = nameapps_entry.get().strip() #cortamos espacios en blancos
+    path_app = patha_entry.get().strip()
+
+    programs[name_app] = path_app
+    nameapps_entry.delete(0,"end")
+    patha_entry.delete(0,"end")
+
+def add_site():
+    name_site = namesite_entry.get().strip() #cortamos espacios en blancos
+    url_site = paths_entry.get().strip()
+
+    site[name_site] = url_site
+    namesite_entry.delete(0,"end")
+    paths_entry.delete(0,"end")
 
 def clock(rec):
     num = rec.replace('alarma', '')
@@ -305,6 +332,7 @@ button_add_apps.place(x=725, y=300, width=200, height=30)
 
 button_add_pages = Button(main_window, text="Agregar sitios web", fg="white", bg="#4A569D", font=("Arial", 12, "bold"), command=abrir_sitios)
 button_add_pages.place(x=725, y=345, width=200, height=30)
+
 
 main_window.mainloop() #indicamos que todo lo que se encuentre antes de mainloop se ejecute, vendria a ser nuestra funcion main 
 
