@@ -9,7 +9,7 @@ listener = sr.Recognizer() #inicializamos Recognizer y lo asignamos a listener
 engine = pyttsx3.init() # inicializamos nuestra libreria pyttsx3
 
 voices = engine.getProperty('voices')
-engine.setProperty('voices', voices[0].id) # voz de hombre con 0, 1 de mujer
+engine.setProperty('voices', 1) # voz de hombre con 0, 1 de mujer #Lo que ponemos siempre suena igual
 engine.setProperty('rate', 145) # velocidad de la voz
 engine.setProperty('volume', 1.0) # volumen de la voz
 
@@ -49,7 +49,7 @@ def escuchar():
         with sr.Microphone() as source: #toma el microfono como fuente
             print("Escuchando...")
             pc = listener.listen(source) # le indicamos que escuche desde el microfono
-            rec = listener.recognize_google(pc,language="[b'\x05es']") #idioma español argentina
+            rec = listener.recognize_google(pc,language="es-AR") #idioma español argentina
             rec = rec.lower() #transforma el texto en minusculas para evitar problemas
             if name in rec:
                 rec = rec.replace(name, '') #remplaza el nombre por vacio, se hace esto para evitar que nuestro asistente repita lo que nosotros le decimos
