@@ -354,9 +354,7 @@ def ejecutar_SpeakIA():
                 escribir(file) #se llama a la funcion escribir de vuelta para que podamos escribir en nota.txt, pero le pasamos file
         
         elif 'finaliza' in rec:
-            hablar('¿Que deseas cerrar?')
-            rec = escuchar()
-            cierra(rec)
+            hablar("Hasta luego")
             break
         
     main_window.update()
@@ -388,22 +386,7 @@ def thread_hello():
     t.start()
     
 thread_hello()
-
-def cierra(rec):
-    for task in programs:
-        kill_task = programs[task].split('\\')
-        kill_task = kill_task[-1] #obtenemos el ultimo elemento de la lista
-        if task in rec:
-            sub.call(['pkill', '-f', programs[task]]) 
-            hablar(f'Cerrando {task}')
-        #if 'todo' in rec:
-        #    sub.call(f'pkill {kill_task} /F', shell=True)
-        #    hablar(f'Cerrando {task}')
-    if 'termina' in rec:
-        sub.call(['pkill', '-f', 'python3'], shell=True)
-        hablar(f'Adiós')
-            
-     
+    
 #definicion de funciones para botones
 #REVISAR
 def cambiar_voz(id):
@@ -421,16 +404,16 @@ def spanish_voice():
 def english_voice():
     cambiar_voz(26)
 
-#CREACION DE BOTONES
-#REVISAR
-button_voice_mx = Button(main_window, text="Voz México", fg="white", bg="#0f9b0f", font=("Arial", 12, "bold"), command=mexican_voice)
-button_voice_mx.place(x=750, y=75, width=150, height=30)
+#En windows estos botones funcionan, pero en _Ubuntu Linux no distingue acentos de distintos paises a pesar de tener instalados los idiomas.
 
-button_voice_es = Button(main_window, text="Voz España", fg="white", bg="#c31432", font=("Arial", 12, "bold"), command=spanish_voice)    
-button_voice_es.place(x=750, y=120,width=150,height=30)
+#button_voice_mx = Button(main_window, text="Voz México", fg="white", bg="#0f9b0f", font=("Arial", 12, "bold"), command=mexican_voice)
+#button_voice_mx.place(x=750, y=75, width=150, height=30)
 
-button_voice_us = Button(main_window, text="Voz EEUU", fg="white", bg="#0082c8", font=("Arial", 12, "bold"), command=english_voice)    
-button_voice_us.place(x=750, y=165,width=150,height=30)    
+#button_voice_es = Button(main_window, text="Voz España", fg="white", bg="#c31432", font=("Arial", 12, "bold"), command=spanish_voice)    
+#button_voice_es.place(x=750, y=120,width=150,height=30)
+
+#button_voice_us = Button(main_window, text="Voz EEUU", fg="white", bg="#0082c8", font=("Arial", 12, "bold"), command=english_voice)    
+#button_voice_us.place(x=750, y=165,width=150,height=30)    
 
 button_listen = Button(main_window, text="Escuchar", fg="white", bg="#4CA1AF", font=("Arial", 15, "bold"), width=20, height=2, command=ejecutar_SpeakIA)
 button_listen.pack(pady=10)
